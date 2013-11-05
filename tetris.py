@@ -1,6 +1,6 @@
 #/user/bin/env python
 
-import os, pygame, random
+import os, pygame, random, copy
 from pygame.locals import *
 
 def enum(**enums):
@@ -69,7 +69,11 @@ class TetrisGameState():
 		    self.glass.blocks[-1].move_left()
 		elif keystate[K_RIGHT]:
 		    self.glass.blocks[-1].move_right()
+		elif keystate[K_UP]:
+		    self.glass.blocks[-1].rotate_cw()
 		elif keystate[K_DOWN]:
+		    self.glass.blocks[-1].rotate_ccw()
+		elif keystate[K_SPACE]:
 		    self.glass.update(delta)
 		    self.fall_delta = 0.0
 		self.move_delta = 0.0
@@ -91,6 +95,7 @@ class Glass():
 		self.glass[i].append(0)
 	self.blocks = []
 	self.block_image = pygame.image.load('images/block.png')
+	self.frozen_block_image = pygame.image.load('images/frozen_block.png')
 
     def update(self, delta):
 	for block in self.blocks:
@@ -99,8 +104,12 @@ class Glass():
     def draw(self, delta):
 	for i in range(len(self.glass)):
 	    for j in range(len(self.glass[i]))[2:len(self.glass[i])]:
-		self.game.screen.blit(self.block_image, (180 + 16 * i, \
-			16 + 16 * j))
+		x = 180 + 16 * i
+		y = 16 + 16 * j
+		if self.glass[i][j] == 0:
+		    self.game.screen.blit(self.block_image, (x, y))
+		else:
+		    self.game.screen.blit(self.frozen_block_image, (x, y))
 	self.draw_blocks(delta)
 
     def draw_blocks(self, delta):
@@ -119,8 +128,41 @@ class Glass():
 	print "adding random block"
 	keys = Block.BLOCKS.keys()
 	type = keys[random.randint(0, 6)]
-	self.add_block(Block(Block.BLOCKS[type]))
+	self.add_block(Block(Block.BLOCKS[type], self))
 
+    def is_valid_move(self, block):
+	# check to make sure block is not outside
+	# left / right boundaries
+
+	if block.x < 0:
+	    return False
+	elif block.x + len(block.arr[0]) > 10:
+	    return False
+	elif block.y + len(block.arr) > 22:
+	    return False
+	# also check to make sure block isnt on top of another
+	# block that is currently set in the glass.
+	for i, row in enumerate(block.arr):
+	    # print row
+	    # print i
+	    for j in range(len(row)):
+		if block.x + j <= 10 and block.y + i < 22:
+		    print "%d, %d : %d" % (block.x + j, block.y + i, \
+			    self.glass[block.x + j][block.y + i])
+
+		    if self.glass[block.x + j][block.y + i] != 0 and \
+			    block.arr[i][j] != 0:
+			print "we hit another block, yo"
+			return False
+	print "\n"
+	return True
+
+    def freeze_block(self, block):
+	for i, row in enumerate(block.arr):
+	    for j in range(len(row)):
+		if block.arr[i][j] == 1:
+		    self.glass[block.x + j][block.y + i] = \
+			block.arr[i][j]
 
 class Block():
 
@@ -149,12 +191,13 @@ class Block():
 		[1, 1, 1]],
 	    }
 
-    def __init__(self, arr):
+    def __init__(self, arr, glass):
 	self.x = 3
 	self.y = 0
 	self.rot = 0
 	self.arr = arr
 	self.moving = True
+	self.glass = glass
 	if arr == Block.BLOCKS["I"]:
 	    self.image = pygame.image.load('images/cyanblock.png')
 	    self.color = (0, 255, 255)
@@ -178,21 +221,31 @@ class Block():
 	    self.color = (255, 128, 0)
 
     def move(self):
-	print "moving block"
-	if self.moving:
-	    if self.y < 20:
-		self.y += 1
-	    else:
-		self.moving = False
-		# dim color of block
+	new_block = copy.copy(self)
+	new_block.y += 1
+	if self.moving and self.glass.is_valid_move(new_block):
+	    self.y += 1
+	else:
+	    self.moving = False
+	    self.glass.freeze_block(self)
 
     def move_left(self):
-	# if self.glass.is_valid_move(self.x - 1):
-	self.x -= 1
+	new_block = copy.copy(self)
+	new_block.x -= 1
+	if self.glass.is_valid_move(new_block):
+	    self.x -= 1
 
     def move_right(self):
-	# if self.glass.is_valid_move(self.x + 1):
-	self.x += 1
+	new_block = copy.copy(self)
+	new_block.x += 1
+	if self.glass.is_valid_move(new_block):
+	    self.x += 1
+
+    def rotate_cw(self):
+	self.arr = zip(*self.arr[::-1])
+
+    def rotate_ccw(self):
+	self.arr = zip(*self.arr)[::-1]
 
 def main():
 
