@@ -64,12 +64,10 @@ class Glass():
 	    # print i
 	    for j in range(len(row)):
 		if block.x + j <= 10 and block.y + i < 22:
-		    print "%d, %d : %d" % (block.x + j, block.y + i, \
 			    self.glass[block.x + j][block.y + i])
 
 		    if self.glass[block.x + j][block.y + i] != 0 and \
 			    block.arr[i][j] != 0:
-			print "we hit another block, yo"
 			return False
 	print "\n"
 	return True
