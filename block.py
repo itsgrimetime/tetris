@@ -3,34 +3,49 @@ import pygame, copy
 class Block():
 
     BLOCKS = {
-	    "I" :  [[0, 0, 0, 0],
-		    [1, 1, 1, 1],
-		    [0, 0, 0, 0],
-		    [0, 0, 0, 0]],
+	    "I" :  [["E", "E", "E", "E"],
+		    ["I", "I", "I", "I"],
+		    ["E", "E", "E", "E"],
+		    ["E", "E", "E", "E"]],
 
-	    "O"	:  [[1, 1],
-		    [1, 1]],
+	    "O"	:  [["O", "O"],
+		    ["O", "O"]],
 
-	    "T"	:  [[0, 1, 0],
-		    [1, 1, 1],
-		    [0, 0, 0]],
+	    "T"	:  [["E", "T", "E"],
+		    ["T", "T", "T"],
+		    ["E", "E", "E"]],
 
-	    "S"	:  [[0, 1, 1],
-		    [1, 1, 0],
-		    [0, 0, 0]],
+	    "S"	:  [["E", "S", "S"],
+		    ["S", "S", "E"],
+		    ["E", "E", "E"]],
 
-	    "Z"	:  [[1, 1, 0],
-		    [0, 1, 1],
-		    [0, 0, 0]],
+	    "Z"	:  [["Z", "Z", "E"],
+		    ["E", "Z", "Z"],
+		    ["E", "E", "E"]],
 
-	    "J" :  [[1, 0, 0],
-		    [1, 1, 1],
-		    [0, 0, 0]],
+	    "J" :  [["J", "E", "E"],
+		    ["J", "J", "J"],
+		    ["E", "E", "E"]],
 
-	    "L"	:  [[0, 0, 1],
-		    [1, 1, 1],
-		    [0, 0, 0]],
+	    "L"	:  [["E", "E", "L"],
+		    ["L", "L", "L"],
+		    ["E", "E", "E"]],
 	    }
+
+    colors = [("I", "cyan"), ("O", "yellow"), ("T", "purple"), ("S", "green"), \
+	    ("Z", "red"), ("J", "blue"), ("L", "orange")]
+
+    IMAGES = {}
+    for block, color in colors:
+	IMAGES[block] = pygame.image.load('images/' + color + 'block.png')
+
+#    IMAGES = { "I" : pygame.image.load('images/cyanblock.png'),
+#	       "O" : pygame.image.load('images/yellowblock.png'),
+#	       "T" : pygame.image.load('images/purpleblock.png'),
+#	       "S" : pygame.image.load('images/greenblock.png'),
+#	       "Z" : pygame.image.load('images/redblock.png'),
+#	       "J" : pygame.image.load('images/blueblock.png'),
+#	       "L" : pygame.image.load('images/orangeblock.png') }
 
     def __init__(self, arr, glass):
 	self.x = 3
@@ -39,29 +54,7 @@ class Block():
 	self.arr = arr
 	self.moving = True
 	self.glass = glass
-	if arr == Block.BLOCKS["I"]:
-	    self.image = pygame.image.load('images/cyanblock.png')
-	    self.color = (0, 255, 255)
-	elif arr == Block.BLOCKS["O"]:
-	    self.image = pygame.image.load('images/yellowblock.png')
-	    self.color = (255, 255, 0)
-	elif arr == Block.BLOCKS["T"]:
-	    self.image = pygame.image.load('images/purpleblock.png')
-	    self.color = (255, 0, 255)
-	elif arr == Block.BLOCKS["S"]:
-	    self.image = pygame.image.load('images/greenblock.png')
-	    self.color = (0, 255, 0)
-	elif arr == Block.BLOCKS["Z"]:
-	    self.image = pygame.image.load('images/redblock.png')
-	    self.color = (255, 0, 0)
-	elif arr == Block.BLOCKS["J"]:
-	    self.image = pygame.image.load('images/blueblock.png')
-	    self.color = (0, 0, 255)
-	elif arr == Block.BLOCKS["L"]:
-	    self.image = pygame.image.load('images/orangeblock.png')
-	    self.color = (255, 128, 0)
-
-    def move(self):
+	    def move(self):
 	new_block = copy.copy(self)
 	new_block.y += 1
 	if self.moving and self.glass.is_valid_move(new_block):
