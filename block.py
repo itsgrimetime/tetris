@@ -39,22 +39,17 @@ class Block():
     for block, color in colors:
 	IMAGES[block] = pygame.image.load('images/' + color + 'block.png')
 
-#    IMAGES = { "I" : pygame.image.load('images/cyanblock.png'),
-#	       "O" : pygame.image.load('images/yellowblock.png'),
-#	       "T" : pygame.image.load('images/purpleblock.png'),
-#	       "S" : pygame.image.load('images/greenblock.png'),
-#	       "Z" : pygame.image.load('images/redblock.png'),
-#	       "J" : pygame.image.load('images/blueblock.png'),
-#	       "L" : pygame.image.load('images/orangeblock.png') }
-
-    def __init__(self, arr, glass):
+    def __init__(self, shape, glass):
 	self.x = 3
 	self.y = 0
 	self.rot = 0
-	self.arr = arr
+	self.shape = shape
+	self.arr = copy.copy(Block.BLOCKS[shape])
 	self.moving = True
 	self.glass = glass
-	    def move(self):
+	self.image = Block.IMAGES[shape]
+
+    def move(self):
 	new_block = copy.copy(self)
 	new_block.y += 1
 	if self.moving and self.glass.is_valid_move(new_block):
@@ -62,6 +57,7 @@ class Block():
 	else:
 	    self.moving = False
 	    self.glass.freeze_block(self)
+	    self.glass.blocks.remove(self)
 
     def move_left(self):
 	new_block = copy.copy(self)
@@ -76,8 +72,16 @@ class Block():
 	    self.x += 1
 
     def rotate_cw(self):
-	self.arr = zip(*self.arr[::-1])
+	new_block = copy.copy(self)
+	new_block.arr = zip(*self.arr[::-1])
+	if self.glass.is_valid_move(new_block):
+	    self.arr = zip(*self.arr[::-1])
 
     def rotate_ccw(self):
-	self.arr = zip(*self.arr)[::-1]
+	new_block = copy.copy(self)
+	new_block.arr = zip(*self.arr)[::-1]
+	if self.glass.is_valid_move(new_block):
+	    self.arr = zip(*self.arr)[::-1]
+
+
 
