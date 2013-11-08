@@ -32,13 +32,13 @@ class TetrisGameState():
 	if no_blocks or not self.glass.blocks[-1].moving:
 	    self.glass.add_random_block()
 	else:
-	    if self.fall_delta > 600.0:
+	    if self.fall_delta > 200.0:
 		self.fall_delta = 0.0
 		self.glass.update(delta)
 	    else:
 		self.fall_delta += delta
 
-	    if self.move_delta > 100.0:
+	    if self.move_delta > 50.0:
 		pygame.event.pump()
 		keystate = pygame.key.get_pressed()
 

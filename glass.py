@@ -6,9 +6,9 @@ class Glass():
     def __init__(self, game):
 	self.game = game
 	self.glass = []
-	for i in range(10):
+	for i in range(22):
 	    self.glass.append([])
-	    for j in range(22):
+	    for j in range(10):
 		self.glass[i].append('E')
 	self.blocks = []
 	self.next_block = None
@@ -18,12 +18,14 @@ class Glass():
     def update(self, delta):
 	for block in self.blocks:
 	    block.move()
+	self.clear_full_rows()
 
     def draw(self, delta):
-	for i in range(len(self.glass)):
-	    for j in range(len(self.glass[i]))[2:len(self.glass[i])]:
-		x = 180 + 16 * i
-		y = 16 + 16 * j
+	for i, row in enumerate(self.glass[2:22]):
+	    i = i + 2
+	    for j, slot in enumerate(row):
+		x = 180 + 16 * j
+		y = 16 + 16 * i
 		if self.glass[i][j] == "E":
 		    self.game.screen.blit(self.block_image, (x, y))
 		else:
@@ -73,17 +75,26 @@ class Glass():
 			# print "block out of glass"
 			return False
 		    else:
-			# print self.glass[block.x + j][block.y + i]
-			if self.glass[block.x + j][block.y + i] != 'E':
+			if self.glass[block.y + i][block.x + j] != 'E':
 			    # print "block on other block"
 			    return False
 	# print "all good"
 	return True
 
+    def clear_full_rows(self):
+	for row in self.glass:
+	    for elem in row:
+		if elem == 'E':
+		    break
+	    else: # row with no empty spots
+		self.glass.remove(row)
+		new_row = ["E"] * 10
+		self.glass.insert(0, new_row)
+
     def freeze_block(self, block):
 	for i, row in enumerate(block.arr):
 	    for j in range(len(row)):
 		if block.arr[i][j] != 'E':
-		    self.glass[block.x + j][block.y + i] = \
+		    self.glass[block.y + i][block.x + j] = \
 			block.arr[i][j]
 
