@@ -11,8 +11,9 @@ class Glass():
 	    for j in range(22):
 		self.glass[i].append('E')
 	self.blocks = []
-	self.block_image = pygame.image.load('images/block.png')
+	self.next_block = None
 	self.frozen_block_image = pygame.image.load('images/frozen_block.png')
+	self.block_image = pygame.image.load('images/block.png')
 
     def update(self, delta):
 	for block in self.blocks:
@@ -28,6 +29,7 @@ class Glass():
 		else:
 		    self.game.screen.blit(self.frozen_block_image, (x, y))
 	self.draw_blocks(delta)
+	self.draw_next_block(delta)
 
     def draw_blocks(self, delta):
 	for block in self.blocks:
@@ -38,10 +40,21 @@ class Glass():
 			drawy = 16 + 16 * block.y + 16 * i
 			self.game.screen.blit(block.image, (drawx, drawy))
 
+    def draw_next_block(self, delta):
+	if self.next_block != None:
+	    for i, row in enumerate(self.next_block.arr):
+		for j, piece in enumerate(row):
+		    if piece != 'E':
+			drawx = 25 + 16 * self.next_block.x + 16 * j
+			drawy = 16 + 16 * self.next_block.y + 16 * i
+			self.game.screen.blit(self.next_block.image, (drawx, drawy))
+
     def add_block(self, block):
-	print "adding block"
-	print "arr: {arr}".format(arr=block.arr)
-	self.blocks.append(block)
+	# print "adding block"
+	# print "arr: {arr}".format(arr=block.arr)
+	if self.next_block != None:
+	    self.blocks.append(self.next_block)
+	self.next_block = block
 
     def add_random_block(self):
 	keys = block.Block.BLOCKS.keys()
@@ -57,14 +70,14 @@ class Glass():
 		    is_out_of_glass_y = block.y + i > 21 or block.y + i < 0
 		    is_out_of_glass = is_out_of_glass_x or is_out_of_glass_y
 		    if is_out_of_glass:
-			print "block out of glass"
+			# print "block out of glass"
 			return False
 		    else:
-			print self.glass[block.x + j][block.y + i]
+			# print self.glass[block.x + j][block.y + i]
 			if self.glass[block.x + j][block.y + i] != 'E':
-			    print "block on other block"
+			    # print "block on other block"
 			    return False
-	print "all good"
+	# print "all good"
 	return True
 
     def freeze_block(self, block):
