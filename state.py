@@ -23,9 +23,10 @@ class TetrisGameState():
     def __init__(self, game):
 	self.game = game;
 	self.background = pygame.image.load('images/background.png')
-	# self.font = pygame.font.Font(None, 36)
-	self.glass = glass.Glass(self.game)
+	self.font = pygame.font.Font(None, 36)
+	self.glass = glass.Glass(self.game, self)
 	self.fall_delta = self.move_delta = 0.0
+	self.points = 0
 
     def update(self, delta):
 	no_blocks = not len(self.glass.blocks)
@@ -59,4 +60,8 @@ class TetrisGameState():
 
     def draw(self, delta):
 	self.game.screen.blit(self.background, (0, 0))
+	black = (0, 0, 0)
+	points = self.font.render("{points}".format \
+		(points=self.points), True, black)
+	self.game.screen.blit(points, (320, 430))
 	self.glass.draw(delta)
