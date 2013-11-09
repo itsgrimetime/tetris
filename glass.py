@@ -90,7 +90,7 @@ class Glass():
 		    break
 	    else: # row with no empty spots
 		self.glass.remove(row)
-		new_row = ["E"] * 10
+		new_row = ["E" for i in range(10)]
 		self.glass.insert(0, new_row)
 		total_score += 1
 	if 2 ** total_score > 1:

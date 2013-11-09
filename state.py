@@ -42,16 +42,16 @@ class TetrisGameState():
 	    if self.move_delta > 50.0:
 		pygame.event.pump()
 		keystate = pygame.key.get_pressed()
-
-		if keystate[K_LEFT]:
-		    self.glass.blocks[-1].move_left()
-		elif keystate[K_RIGHT]:
-		    self.glass.blocks[-1].move_right()
-		elif keystate[K_UP]:
-		    self.glass.blocks[-1].rotate_cw()
-		elif keystate[K_DOWN]:
-		    self.glass.blocks[-1].rotate_ccw()
-		elif keystate[K_SPACE]:
+		if len(self.glass.blocks) > 0:
+		    if keystate[K_LEFT]:
+			self.glass.blocks[-1].move_left()
+		    elif keystate[K_RIGHT]:
+			self.glass.blocks[-1].move_right()
+		    elif keystate[K_UP]:
+			self.glass.blocks[-1].rotate_cw()
+		    elif keystate[K_DOWN]:
+			self.glass.blocks[-1].rotate_ccw()
+		if keystate[K_SPACE]:
 		    self.glass.update(delta)
 		    self.fall_delta = 0.0
 		self.move_delta = 0.0
