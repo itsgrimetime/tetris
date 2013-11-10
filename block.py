@@ -54,10 +54,9 @@ class Block():
 	new_block.y += 1
 	if self.moving and self.glass.is_valid_move(new_block):
 	    self.y += 1
+	    return True
 	else:
-	    self.moving = False
-	    self.glass.freeze_block(self)
-	    self.glass.blocks.remove(self)
+	    return False
 
     def move_left(self):
 	new_block = copy.copy(self)

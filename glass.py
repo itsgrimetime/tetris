@@ -18,7 +18,11 @@ class Glass():
 
     def update(self, delta):
 	for block in self.blocks:
-	    block.move()
+	    moved = block.move()
+	    if not moved:
+		self.moving = False
+		self.freeze_block(block)
+		self.blocks.remove(block)
 	self.clear_full_rows()
 
     def draw(self, delta):
@@ -95,6 +99,16 @@ class Glass():
 		total_score += 1
 	if 2 ** total_score > 1:
 	    self.state.points += 2 ** total_score
+
+    def draw_ghost_block(self):
+	if len(self.blocks) > 0:
+	    block = copy.copy(self.blocks[-1])
+	    while (True):
+		if not (block.move()):
+		    break
+	    block.
+
+
 
     def freeze_block(self, block):
 	for i, row in enumerate(block.arr):
