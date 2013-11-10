@@ -33,7 +33,7 @@ class Block():
 	    }
 
     colors = [("I", "cyan"), ("O", "yellow"), ("T", "purple"), ("S", "green"), \
-	    ("Z", "red"), ("J", "blue"), ("L", "orange")]
+	    ("Z", "red"), ("J", "blue"), ("L", "orange"), ("X", "ghost")]
 
     IMAGES = {}
     for block, color in colors:

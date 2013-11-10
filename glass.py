@@ -1,4 +1,4 @@
-import pygame, random
+import pygame, random, copy
 import block
 
 class Glass():
@@ -36,6 +36,7 @@ class Glass():
 		else:
 		    self.game.screen.blit(self.frozen_block_image, (x, y))
 	self.draw_blocks(delta)
+	self.draw_ghost_block(delta)
 	self.draw_next_block(delta)
 
     def draw_blocks(self, delta):
@@ -100,13 +101,19 @@ class Glass():
 	if 2 ** total_score > 1:
 	    self.state.points += 2 ** total_score
 
-    def draw_ghost_block(self):
+    def draw_ghost_block(self, delta):
 	if len(self.blocks) > 0:
 	    block = copy.copy(self.blocks[-1])
 	    while (True):
 		if not (block.move()):
 		    break
-	    block.
+	    block.image = block.IMAGES["X"]
+	    for i, row in enumerate(block.arr):
+		for j, elem in enumerate(row):
+		    if elem != "E":
+			drawx = 180 + 16 * block.x + 16 * j
+			drawy = 16 + 16 * block.y + 16 * i
+			self.game.screen.blit(block.image, (drawx, drawy))
 
 
 
