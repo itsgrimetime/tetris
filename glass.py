@@ -15,6 +15,10 @@ class Glass():
 	self.next_block = None
 	self.frozen_block_image = pygame.image.load('images/frozen_block.png')
 	self.block_image = pygame.image.load('images/block.png')
+	self.x_offset = 200
+	self.y_offset = 50
+	self.next_x_off = 15
+	self.next_y_off = 25
 
     def update(self, delta):
 	for block in self.blocks:
@@ -29,8 +33,8 @@ class Glass():
 	for i, row in enumerate(self.glass[2:22]):
 	    i = i + 2
 	    for j, slot in enumerate(row):
-		x = 180 + 16 * j
-		y = 16 + 16 * i
+		x = self.x_offset + 16 * j
+		y = self.y_offset + 16 * i
 		if self.glass[i][j] == "E":
 		    self.game.screen.blit(self.block_image, (x, y))
 		else:
@@ -44,8 +48,8 @@ class Glass():
 	    for i in range(len(block.arr)):
 		for j in range(len(block.arr[i])):
 		    if block.arr[i][j] != 'E' and (block.y + i) > 1:
-			drawx = 180 + 16 * block.x + 16 * j
-			drawy = 16 + 16 * block.y + 16 * i
+			drawx = self.x_offset + 16 * block.x + 16 * j
+			drawy = self.y_offset + 16 * block.y + 16 * i
 			self.game.screen.blit(block.image, (drawx, drawy))
 
     def draw_next_block(self, delta):
@@ -53,8 +57,8 @@ class Glass():
 	    for i, row in enumerate(self.next_block.arr):
 		for j, piece in enumerate(row):
 		    if piece != 'E':
-			drawx = 25 + 16 * self.next_block.x + 16 * j
-			drawy = 16 + 16 * self.next_block.y + 16 * i
+			drawx = self.next_x_off + 16 * self.next_block.x + 16 * j
+			drawy = self.next_y_off + 16 * self.next_block.y + 16 * i
 			self.game.screen.blit(self.next_block.image, (drawx, drawy))
 
     def add_block(self, block):
@@ -111,8 +115,8 @@ class Glass():
 	    for i, row in enumerate(block.arr):
 		for j, elem in enumerate(row):
 		    if elem != "E":
-			drawx = 180 + 16 * block.x + 16 * j
-			drawy = 16 + 16 * block.y + 16 * i
+			drawx = self.x_offset + 16 * block.x + 16 * j
+			drawy = self.y_offset + 16 * block.y + 16 * i
 			self.game.screen.blit(block.image, (drawx, drawy))
 
 
